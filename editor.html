@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <script src="./ckeditor/ckeditor.js"></script>
+  <body>
+    <textarea id="editor">This is some sample content.</textarea>
+    <script>
+      if (CKEDITOR.env.ie && CKEDITOR.env.version < 9)
+        CKEDITOR.tools.enableHtml5Elements(document);
+
+      CKEDITOR.config.height = 250;
+      CKEDITOR.config.width = "auto";
+      CKEDITOR.config.resize_enabled = false;
+
+      var initSample = (function () {
+        var wysiwygareaAvailable = isWysiwygareaAvailable(),
+          isBBCodeBuiltIn = !!CKEDITOR.plugins.get("bbcode");
+
+        return function () {
+          var editorElement = CKEDITOR.document.getById("editor");
+
+          if (isBBCodeBuiltIn) {
+            editorElement.setHtml(
+              "Hello world!\n\n" +
+                "I'm an instance of [url=https://ckeditor.com]CKEditor[/url]."
+            );
+          }
+
+          if (wysiwygareaAvailable) {
+            CKEDITOR.replace("editor", {
+              height: 350,
+              extraPlugins: "image, dialog, uploadimage",
+              removePlugins: "easyimage",
+              browserContextMenuOnCtrl: true,
+              filebrowserBrowseUrl: "/ckfinder/ckfinder.html",
+              filebrowserImageBrowseUrl: "/ckfinder/ckfinder.html?Type=Images",
+              filebrowserUploadUrl:
+                "/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files",
+              filebrowserImageUploadUrl:
+                "/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images",
+            });
+          } else {
+            editorElement.setAttribute("contenteditable", "true");
+            CKEDITOR.inline("editor");
+          }
+        };
+
+        function isWysiwygareaAvailable() {
+          if (CKEDITOR.revision == "%RE" + "V%") {
+            return true;
+          }
+
+          return !!CKEDITOR.plugins.get("wysiwygarea");
+        }
+      })();
+
+      initSample();
+    </script>
+  </body>
+</html>
